@@ -1,0 +1,201 @@
+Order ID,Sale Date,Item Name,Category,Quantity,Unit Price,Payment Method,Customer Zip
+ORD-1000,,USB Cable,,,99.99,Card,
+ORD-1001,,Mouse,electronics,two,19.99,Cash,90210
+ORD-1002,1/4/2026,Monitor,,2,99.99,Cash,
+ORD-1003,1/5/2026,Headphones,,1,99.99,Cash,
+ORD-1004,3/2/2026,Monitor,,2,49.99, mobile,
+ORD-1005,,Laptop,Electronics,2,,,10001
+ORD-1006,2/4/2026,Keyboard,,3,99.99, mobile,90210
+ORD-1007,1/3/2026,mouse,ACC,,99.99,Cash,ABCDE
+ORD-1008,,Monitor,electronics,two,$29.99 , mobile,10001
+ORD-1009,2/23/2026,Mouse,,2,,,
+ORD-1010,1/13/2026,USB Cable,Electronics,2,,,
+ORD-1011,1/12/2026,Mouse,Accessories,2,99.99,Card,ABCDE
+ORD-1012,,USB Cable,Accessories,1,$29.99 ,,10001
+ORD-1013,2/6/2026,Headphones,ACC,two,,Cash,90210
+ORD-1014,,Keyboard,electronics,,19.99,card,90210
+ORD-1015,1/29/2026,USB Cable,electronics,3,19.99,Cash,ABCDE
+ORD-1016,,Laptop,ACC,,49.99, mobile,
+ORD-1017,2/23/2026,Headphones,Accessories,2,49.99,Cash,
+ORD-1018,,Laptop,Accessories,,,Cash,90210
+ORD-1019,2/14/2026,Laptop,Accessories,,19.99,card,90210
+ORD-1020,,Mouse,,,49.99, mobile,10001
+ORD-1021,2/15/2026,Headphones,,two,99.99,Card,90210
+ORD-1022,,Mouse,Electronics,,,,10001
+ORD-1023,2/21/2026,USB Cable,ACC,3,49.99,,
+ORD-1024,,Mouse,Electronics,2,$29.99 ,,90210
+ORD-1025,1/23/2026,Headphones,,3,,card,90210
+ORD-1026,,Laptop,electronics,,49.99,Card,10001
+ORD-1027,,mouse,Electronics,3,$29.99 ,card,ABCDE
+ORD-1028,1/24/2026,Keyboard,Electronics,3,$29.99 ,Cash,90210
+ORD-1029,,USB Cable,ACC,2,$29.99 ,Card,10001
+ORD-1030,,mouse,electronics,,$29.99 ,Card,
+ORD-1031,,Headphones,,,,Cash,90210
+ORD-1032,,Laptop,ACC,2,49.99, mobile,ABCDE
+ORD-1033,1/3/2026,Laptop,Accessories,2,49.99,card,10001
+ORD-1034,,USB Cable,Electronics,3,49.99, mobile,ABCDE
+ORD-1035,,Headphones,Electronics,3,$29.99 ,,
+ORD-1036,1/11/2026,laptop,Accessories,,99.99,Card,90210
+ORD-1037,,Monitor,,2,,,
+ORD-1038,,Laptop,Electronics,1,49.99, mobile,10001
+ORD-1039,1/14/2026,keyboard,Accessories,two,,,90210
+ORD-1040,,Mouse,,3,49.99,Cash,10001
+ORD-1041,,Laptop,Accessories,1,$29.99 ,Cash,10001
+,,USB Cable,electronics,3,,,ABCDE
+ORD-1043,1/19/2026,USB Cable,electronics,,$29.99 ,,ABCDE
+ORD-1044,2/26/2026,Laptop,ACC,,99.99,card,90210
+ORD-1045,2/2/2026,keyboard,electronics,,99.99,card,10001
+ORD-1046,,Monitor,Electronics,two,19.99,Cash,
+ORD-1047,3/2/2026,Monitor,Accessories,3,19.99, mobile,ABCDE
+ORD-1048,1/26/2026,Monitor,Accessories,,99.99,Card,
+ORD-1049,2/6/2026,Laptop,Accessories,two,49.99,,90210
+,2/17/2026,USB Cable,electronics,2,$29.99 , mobile,ABCDE
+,,Monitor,electronics,3,19.99,,10001
+ORD-1052,2/20/2026,Laptop,electronics,2,49.99,,ABCDE
+ORD-1053,1/14/2026,Laptop,Electronics,two,$29.99 ,Card,
+ORD-1054,2/23/2026,Keyboard,Accessories,,49.99,Cash,ABCDE
+ORD-1055,1/10/2026,headphones,,3,19.99,Card,ABCDE
+ORD-1056,2/1/2026,Monitor,Electronics,,49.99, mobile,10001
+ORD-1057,,Headphones,electronics,3,99.99,Cash,
+ORD-1058,1/9/2026,USB Cable,Electronics,two,19.99,,
+ORD-1059,,headphones,electronics,,,Card,90210
+ORD-1060,1/20/2026,Mouse,ACC,two,99.99,Cash,10001
+ORD-1061,,Laptop,Electronics,,19.99,Card,
+ORD-1062,2/25/2026,Mouse,electronics,1,19.99, mobile,90210
+ORD-1063,2/25/2026,Keyboard,Electronics,1,,Card,90210
+ORD-1064,1/8/2026,Laptop,Accessories,2,, mobile,90210
+ORD-1065,2/17/2026,Headphones,electronics,2,99.99, mobile,10001
+ORD-1066,1/14/2026,monitor,,two,$29.99 ,,
+ORD-1067,,USB Cable,ACC,two,99.99,card,
+ORD-1068,2/2/2026,Headphones,,two,19.99,Card,90210
+ORD-1069,2/5/2026,usb cable,Accessories,2,99.99,Cash,90210
+ORD-1070,1/23/2026,Headphones,,two,,Card,90210
+ORD-1071,1/20/2026,Laptop,ACC,two,19.99,Cash,
+ORD-1072,2/8/2026,USB Cable,Accessories,,99.99,Card,10001
+ORD-1073,,Laptop,,3,99.99,Card,ABCDE
+,1/22/2026,mouse,ACC,1,19.99,Card,90210
+ORD-1075,2/8/2026,Keyboard,ACC,2,, mobile,90210
+ORD-1076,1/4/2026,Laptop,,3,49.99,card,10001
+ORD-1077,2/9/2026,USB Cable,Accessories,3,$29.99 ,Card,
+ORD-1078,2/12/2026,laptop,electronics,3,$29.99 ,,ABCDE
+ORD-1079,2/5/2026,USB Cable,electronics,,$29.99 ,,ABCDE
+ORD-1080,,Keyboard,,,$29.99 ,Cash,
+ORD-1081,,Monitor,Accessories,2,,card,ABCDE
+ORD-1082,2/22/2026,Monitor,,2,,,90210
+ORD-1083,,USB Cable,Electronics,1,, mobile,
+ORD-1084,,headphones,Accessories,3,99.99,card,90210
+ORD-1085,1/27/2026,Mouse,Electronics,,$29.99 ,card,ABCDE
+ORD-1086,2/13/2026,headphones,ACC,two,99.99,Cash,90210
+ORD-1087,,Mouse,,2,,,ABCDE
+ORD-1088,2/26/2026,Laptop,Accessories,1,,,
+ORD-1089,,Headphones,Electronics,1,,card,ABCDE
+ORD-1090,1/24/2026,Monitor,electronics,1,49.99,card,ABCDE
+,3/1/2026,Mouse,electronics,,99.99,,
+ORD-1092,2/19/2026,Mouse,Accessories,two,$29.99 ,card,10001
+ORD-1093,,Laptop,ACC,3,19.99,card,10001
+ORD-1094,2/21/2026,USB Cable,electronics,2,19.99,,10001
+ORD-1095,2/14/2026,Monitor,,3,, mobile,90210
+ORD-1096,2/15/2026,Monitor,Accessories,1,$29.99 ,Cash,ABCDE
+ORD-1097,1/20/2026,Monitor,Electronics,,99.99,Card,90210
+ORD-1098,,Keyboard,ACC,1,,card,ABCDE
+ORD-1099,1/21/2026,keyboard,Accessories,,49.99,Cash,90210
+ORD-1100,1/16/2026,Laptop,ACC,,,,ABCDE
+ORD-1101,1/24/2026,USB Cable,,3,49.99, mobile,ABCDE
+ORD-1102,1/13/2026,Monitor,,1,49.99,Cash,10001
+ORD-1103,,Monitor,Accessories,3,49.99,card,10001
+ORD-1104,2/6/2026,Laptop,Accessories,1,99.99,Cash,
+ORD-1105,1/12/2026,Laptop,Accessories,two,99.99,card,ABCDE
+ORD-1106,2/3/2026,Monitor,ACC,1,49.99,card,ABCDE
+ORD-1107,2/14/2026,Monitor,Accessories,two,19.99, mobile,10001
+ORD-1108,,Mouse,,1,$29.99 ,,ABCDE
+ORD-1109,,Keyboard,,,$29.99 ,Cash,10001
+ORD-1110,2/2/2026,Mouse,Accessories,,19.99,Cash,90210
+ORD-1111,,Laptop,Accessories,1,99.99,,10001
+ORD-1112,2/5/2026,mouse,electronics,,19.99, mobile,ABCDE
+,,Monitor,Accessories,,19.99,card,ABCDE
+,1/4/2026,laptop,Electronics,two,,Card,
+ORD-1115,2/9/2026,USB Cable,electronics,two,99.99,,ABCDE
+,2/14/2026,mouse,ACC,two,$29.99 ,Card,
+,1/6/2026,Headphones,Electronics,,49.99, mobile,10001
+ORD-1118,,Mouse,Electronics,1,$29.99 ,Cash,10001
+ORD-1119,,USB Cable,electronics,1,99.99,,ABCDE
+ORD-1120,2/8/2026,Monitor,electronics,2,49.99, mobile,90210
+ORD-1121,,monitor,ACC,,99.99,Card,10001
+ORD-1122,2/8/2026,Monitor,Electronics,3,$29.99 ,,10001
+,2/24/2026,Keyboard,ACC,1,49.99,,ABCDE
+,2/6/2026,Headphones,electronics,,49.99,Cash,
+ORD-1125,,headphones,ACC,two,,Cash,
+ORD-1126,1/10/2026,USB Cable,electronics,3,19.99, mobile,10001
+ORD-1127,2/28/2026,monitor,,two,$29.99 ,,ABCDE
+ORD-1128,2/6/2026,Keyboard,Electronics,3,19.99,,
+ORD-1129,,Monitor,electronics,3,99.99,Cash,10001
+ORD-1130,1/10/2026,usb cable,Accessories,,49.99,,
+ORD-1131,2/16/2026,Headphones,,1,99.99,card,10001
+ORD-1132,2/18/2026,Keyboard,ACC,two,$29.99 ,card,10001
+ORD-1133,,mouse,electronics,2,,Card,ABCDE
+ORD-1134,1/8/2026,USB Cable,Accessories,2,49.99, mobile,
+,2/4/2026,Monitor,,,$29.99 ,Card,ABCDE
+ORD-1136,1/30/2026,USB Cable,Accessories,,49.99,Cash,10001
+ORD-1137,1/8/2026,usb cable,,3,, mobile,10001
+ORD-1138,1/23/2026,USB Cable,,two,99.99, mobile,
+ORD-1139,1/21/2026,USB Cable,electronics,,49.99,Card,ABCDE
+ORD-1140,,Laptop,ACC,2,19.99,Cash,
+ORD-1141,1/29/2026,Mouse,electronics,,19.99,Card,ABCDE
+ORD-1142,2/16/2026,Mouse,ACC,2,99.99,,
+ORD-1143,1/12/2026,Headphones,electronics,,,Card,90210
+ORD-1144,,Laptop,,2,99.99,card,
+ORD-1145,,Headphones,Electronics,,99.99,card,90210
+ORD-1146,1/24/2026,USB Cable,electronics,1,49.99,Card,ABCDE
+ORD-1147,2/25/2026,Mouse,ACC,3,49.99,,90210
+ORD-1148,,Headphones,,two,49.99,Cash,
+ORD-1149,2/17/2026,usb cable,Accessories,two,49.99,Cash,
+ORD-1150,2/10/2026,USB Cable,ACC,3,,Card,10001
+,,Laptop,Accessories,two,,Cash,
+,,Keyboard,Accessories,3,,,10001
+ORD-1153,,mouse,,,,Card,10001
+ORD-1154,1/2/2026,usb cable,ACC,1,,card,
+,2/28/2026,USB Cable,,,, mobile,10001
+ORD-1156,2/14/2026,Monitor,electronics,3,49.99,Card,
+ORD-1157,2/1/2026,Monitor,,1,19.99,Cash,ABCDE
+ORD-1158,2/8/2026,Mouse,Electronics,1,19.99,card,10001
+ORD-1159,,Laptop,Electronics,,$29.99 ,,90210
+ORD-1160,1/8/2026,headphones,Accessories,1,99.99,card,
+ORD-1161,2/24/2026,Keyboard,Accessories,3,, mobile,90210
+ORD-1162,2/10/2026,Monitor,ACC,2,99.99,,
+,,USB Cable,ACC,3,99.99, mobile,ABCDE
+,2/6/2026,USB Cable,electronics,1,99.99,Cash,90210
+ORD-1165,1/12/2026,headphones,ACC,two,99.99, mobile,ABCDE
+,1/25/2026,Mouse,electronics,,49.99,,ABCDE
+ORD-1167,,Laptop,ACC,two,,,ABCDE
+ORD-1168,2/18/2026,headphones,electronics,,49.99, mobile,
+ORD-1169,2/6/2026,usb cable,electronics,2,49.99,card,10001
+ORD-1170,1/10/2026,usb cable,,3,19.99, mobile,90210
+ORD-1171,,keyboard,Accessories,3,99.99,Cash,10001
+,1/24/2026,laptop,electronics,,99.99,Card,
+ORD-1173,,USB Cable,ACC,3,49.99,card,ABCDE
+ORD-1174,1/15/2026,Keyboard,ACC,,99.99,Cash,10001
+ORD-1175,,USB Cable,Electronics,3,99.99,Cash,10001
+,1/24/2026,mouse,Accessories,two,,Card,
+ORD-1177,1/15/2026,Keyboard,ACC,two,$29.99 ,,ABCDE
+ORD-1178,2/23/2026,Laptop,ACC,,,card,ABCDE
+ORD-1179,1/29/2026,Keyboard,ACC,,49.99,Cash,10001
+ORD-1180,2/11/2026,monitor,,1,49.99, mobile,ABCDE
+,1/17/2026,mouse,Accessories,2,19.99,card,90210
+ORD-1182,1/29/2026,Keyboard,electronics,two,$29.99 ,Cash,10001
+ORD-1183,2/6/2026,Monitor,Electronics,2,$29.99 ,,90210
+ORD-1184,2/28/2026,Monitor,electronics,two,$29.99 ,,90210
+ORD-1185,3/1/2026,monitor,Accessories,two,$29.99 , mobile,ABCDE
+ORD-1186,1/26/2026,Keyboard,,2,$29.99 ,,ABCDE
+ORD-1187,1/5/2026,Keyboard,Accessories,3,,Cash,10001
+,3/1/2026,Mouse,,2,19.99, mobile,ABCDE
+ORD-1189,1/10/2026,Mouse,,3,, mobile,10001
+ORD-1190,1/19/2026,Keyboard,ACC,,,Card,ABCDE
+ORD-1191,1/30/2026,keyboard,ACC,2,19.99, mobile,90210
+ORD-1192,1/28/2026,mouse,Electronics,1,19.99,Card,ABCDE
+ORD-1193,1/29/2026,Mouse,,3,49.99,,90210
+ORD-1194,2/7/2026,Laptop,electronics,1,19.99,Cash,90210
+,,Mouse,electronics,,,Cash,90210
+ORD-1196,2/26/2026,laptop,Electronics,two,99.99,,
+ORD-1197,1/15/2026,Mouse,Accessories,,19.99,card,90210
+ORD-1198,2/8/2026,Laptop,Electronics,2,49.99,,ABCDE
+,,headphones,Electronics,1,,card,
