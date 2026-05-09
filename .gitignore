@@ -1,0 +1,7 @@
+# Python bytecode caches
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Generated demo artifacts
+clients/demo_retail_case/output/
