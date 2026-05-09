@@ -2,10 +2,21 @@
 
 This project is organized for reusable client onboarding.
 
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+  A[RAW CSV] --> B[Bronze]
+  B --> C[Silver Normalization]
+  C --> D[Validation and S5 Split]
+  D --> E[Gold Layer]
+  E --> F[Projection Engine]
+```
+
 ## Structure
 
-- `templates/config_TEMPLATE.py`: Copy and customize for each client.
-- `templates/projection_TEMPLATE.py`: Shared projection script driven by client config.
+- `templates/pipeline_config.py`: Copy and customize for each client.
+- `templates/loss_projection_engine.py`: Shared projection script driven by client config.
 - `clients/client_name_001/raw_data.csv`: Client source data.
 - `clients/client_name_001/client_config.py`: Client-specific schema and projection settings.
 - `clients/client_name_001/output/`: Logs and generated outputs.
@@ -15,7 +26,7 @@ This project is organized for reusable client onboarding.
 ## New Client Setup
 
 1. Create a folder under `clients/` (example: `clients/acme_2026_05`).
-2. Copy `templates/config_TEMPLATE.py` to `clients/acme_2026_05/client_config.py`.
+2. Copy `templates/pipeline_config.py` to `clients/acme_2026_05/client_config.py`.
 3. Put source data at `clients/acme_2026_05/raw_data.csv`.
 4. Update `run_pipeline.py` value of `CLIENT_NAME`.
 5. Run:

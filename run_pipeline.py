@@ -87,7 +87,7 @@ def main():
             "Loss Projection",
             [
                 sys.executable,
-                str(BASE_DIR / "templates" / "projection_TEMPLATE.py"),
+                str(BASE_DIR / "templates" / "loss_projection_engine.py"),
                 "--config",
                 str(client_config_path),
             ],

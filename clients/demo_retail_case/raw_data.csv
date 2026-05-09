@@ -1,0 +1,31 @@
+Order ID,Sale Date,Item Name,Category,Quantity,Unit Price,Payment Method,Customer Zip
+DEMO-1001,10/03/2025,USB Cable,Electronics,8,14.99,Card,10001
+DEMO-1002,10/08/2025,Wireless Mouse,Electronics,6,24.99,Cash,30301
+DEMO-1003,10/15/2025,Laptop Stand,Accessories,4,39.50,Card,60601
+DEMO-1004,10/22/2025,Keyboard,Accessories,5,49.99,Mobile,94105
+DEMO-1005,11/02/2025,USB Cable,Electronics,9,14.99,Card,10001
+DEMO-1006,11/09/2025,Wireless Mouse,Electronics,7,24.99,Cash,30301
+DEMO-1007,11/18/2025,Laptop Stand,Accessories,5,39.50,Card,60601
+DEMO-1008,11/26/2025,Keyboard,Accessories,6,49.99,Mobile,94105
+DEMO-1009,12/03/2025,USB Cable,Electronics,10,14.99,Card,10001
+DEMO-1010,12/10/2025,Wireless Mouse,Electronics,8,24.99,Cash,30301
+DEMO-1011,12/17/2025,Laptop Stand,Accessories,6,39.50,Card,60601
+DEMO-1012,12/27/2025,Keyboard,Accessories,7,49.99,Mobile,94105
+DEMO-1013,01/04/2026,USB Cable,Electronics,11,14.99,Card,10001
+DEMO-1014,01/11/2026,Wireless Mouse,Electronics,9,24.99,Cash,30301
+DEMO-1015,01/14/2026,Laptop Stand,Accessories,6,39.50,Card,60601
+DEMO-1016,01/18/2026,Keyboard,Accessories,5,49.99,Mobile,94105
+DEMO-1017,01/22/2026,USB Cable,Electronics,6,14.99,Card,10001
+DEMO-1018,01/28/2026,Wireless Mouse,Electronics,4,24.99,Cash,30301
+DEMO-1019,02/05/2026,Laptop Stand,Accessories,5,39.50,Card,60601
+DEMO-1020,02/12/2026,Keyboard,Accessories,4,49.99,Mobile,94105
+DEMO-1021,02/18/2026,USB Cable,Electronics,5,14.99,Card,10001
+DEMO-1022,02/21/2026,Wireless Mouse,Electronics,4,24.99,Cash,30301
+DEMO-1023,02/27/2026,Laptop Stand,Accessories,3,39.50,Card,60601
+DEMO-1024,03/02/2026,Keyboard,Accessories,3,49.99,Mobile,94105
+DEMO-1025,01/09/2026,usb cable,electronics,3,$14.99, mobile,ABCDE
+DEMO-1026,,Wireless Mouse,Electronics,2,24.99,Card,30301
+DEMO-1027,02/08/2026,Laptop Stand,ACC,two,39.50,Cash,60601
+DEMO-1028,02/10/2026,Keyboard,Accessories,1,,Card,94105
+,02/14/2026,USB Cable,Electronics,2,14.99,Card,10001
+DEMO-1030,03/05/2026,Wireless Mouse,,2,24.99,,999

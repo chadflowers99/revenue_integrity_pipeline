@@ -1,8 +1,8 @@
-"""projection_TEMPLATE.py
+"""loss_projection_engine.py
 
 Config-driven forensic loss projection.
 Usage:
-    python templates/projection_TEMPLATE.py --config clients/client_name_001/client_config.py
+    python templates/loss_projection_engine.py --config clients/client_name_001/client_config.py
 """
 
 import argparse
@@ -42,7 +42,7 @@ def load_gold(path, review_date_str, date_col, revenue_col):
     data_max = df[date_col].max()
     review_dt = pd.Timestamp(review_date_str)
 
-    print(f"  Data range     : {data_min.date()} → {data_max.date()}")
+    print(f"  Data range     : {data_min.date()} -> {data_max.date()}")
     print(f"  Review date    : {review_date_str}")
 
     if review_dt < data_min:

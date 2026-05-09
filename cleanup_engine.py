@@ -7,7 +7,7 @@ Behavior is 100% driven by the job config.
 
 import os
 import re
-from typing import Dict, List
+from typing import Dict
 import pandas as pd
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 2000)
@@ -43,34 +43,45 @@ def clean_text(text):
 
 def diagnostic_currency_handler(value):
     """
-    Silver-Layer Normalization:
-    Extracts numeric floats from fractured currency strings.
+    Silver-Layer currency parsing with explicit S5 flag routing.
+
+    Returns:
+      parsed_value (float | None), s5_flag (bool), remediated (bool)
     """
     if pd.isna(value) or value == "":
-        return None
+        return None, False, False
 
-    # Cast to string to handle mixed types (floats/objects)
-    str_val = str(value).strip().lower()
+    original = str(value).strip()
+    lowered = original.lower()
 
-    # 1. Forensic Detection: Log if remediation is required
-    # (e.g., values containing '$', 'cash', or 'mobile')
-    needs_remediation = any(char in str_val for char in ['$', 'cash', 'mobile', 'card'])
+    clean_val = (lowered.replace('$', '')
+                       .replace('cash', '')
+                       .replace('mobile', '')
+                       .replace('pay', '')
+                       .replace('card', '')
+                       .strip())
+    remediated = clean_val != lowered
 
     try:
-        # Strip currency symbols and common noise words found in messy_cafe_sales
-        clean_val = (str_val.replace('$', '')
-                            .replace('cash', '')
-                            .replace('mobile', '')
-                            .replace('pay', '')
-                            .replace('card', '')
-                            .strip())
-
-        # 2. Coerce to float
-        return float(clean_val)
-
+        return float(clean_val), False, remediated
     except ValueError:
-        # 3. Suppression Logic: If it can't be coerced, flag for S5 state review
-        return "S5_REVIEW_REQUIRED"
+        # Keep numeric column numeric; route suppression state to row flag column.
+        return None, True, False
+
+
+def is_safe_recompute_expression(expr: str, columns) -> bool:
+    """
+    Restrict recompute expressions to basic arithmetic over known columns.
+    """
+    if not isinstance(expr, str) or not expr.strip():
+        return False
+
+    if not re.fullmatch(r"[A-Za-z0-9_\s\+\-\*\/\(\)\.]+", expr):
+        return False
+
+    allowed_identifiers = set(columns)
+    tokens = set(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", expr))
+    return tokens.issubset(allowed_identifiers)
 
 
 # -----------------------------
@@ -200,6 +211,43 @@ def run_cleanup(config: Dict):
             df[col] = df[col].replace(mapping)
 
     # -----------------------------
+    # Conditional mapping (cross-column derivations)
+    # -----------------------------
+    conditional_maps = config.get("conditional_maps", [])
+    for rule in conditional_maps:
+        target_col = normalize_header(rule.get("target_column", ""))
+        source_col = normalize_header(rule.get("source_column", ""))
+        lookup = rule.get("lookup", {})
+        only_if_target_missing = bool(rule.get("only_if_target_missing", True))
+
+        if not target_col or not source_col:
+            print("[WARN] conditional_maps rule missing target_column/source_column; skipped")
+            continue
+        if target_col not in df.columns or source_col not in df.columns:
+            print(
+                f"[WARN] conditional_maps columns not found: target={target_col}, source={source_col}; skipped"
+            )
+            continue
+        if not isinstance(lookup, dict) or not lookup:
+            continue
+
+        source_values = df[source_col].astype(str).str.strip().str.title()
+        mapped = source_values.map(lookup)
+
+        if only_if_target_missing:
+            target_missing = df[target_col].isna() | (df[target_col].astype(str).str.strip() == "")
+            apply_mask = target_missing & mapped.notna()
+        else:
+            apply_mask = mapped.notna()
+
+        applied_count = int(apply_mask.sum())
+        if applied_count > 0:
+            df.loc[apply_mask, target_col] = mapped[apply_mask]
+            print(
+                f"[DERIVE] {target_col}: applied {applied_count} conditional fills from {source_col}"
+            )
+
+    # -----------------------------
     # Numeric cleaning
     # -----------------------------
     for col in numeric_columns:
@@ -229,18 +277,28 @@ def run_cleanup(config: Dict):
     # -----------------------------
     currency_columns = normalize_column_list(config.get("currency_columns", []))
     s5_threshold = config.get("s5_threshold", 0.05)
+    row_flag_column = normalize_header(config.get("row_flag_column", "_row_flag"))
+    if row_flag_column not in df.columns:
+        df[row_flag_column] = pd.NA
+
     remediation_stats = {}
+    s5_any_mask = pd.Series(False, index=df.index)
     for col in currency_columns:
         if col in df.columns:
             print(f"[DEBUG] Applying currency handler to: {col}")
-            original_values = df[col].astype(str)
-            df[col] = df[col].apply(diagnostic_currency_handler)
-            s5_count = (df[col] == "S5_REVIEW_REQUIRED").sum()
-            remediated = (
-                (original_values != df[col].astype(str))
-                & (df[col] != "S5_REVIEW_REQUIRED")
-                & (df[col].notnull())
-            ).sum()
+            parsed = df[col].apply(diagnostic_currency_handler)
+            parsed_values = parsed.apply(lambda x: x[0])
+            parsed_s5 = parsed.apply(lambda x: x[1])
+            parsed_remediated = parsed.apply(lambda x: x[2])
+
+            df[col] = pd.to_numeric(parsed_values, errors="coerce")
+            remediated = int(parsed_remediated.sum())
+            s5_count = int(parsed_s5.sum())
+            s5_any_mask |= parsed_s5
+
+            if s5_count > 0:
+                df.loc[parsed_s5, row_flag_column] = "S5_REVIEW_REQUIRED"
+
             remediation_stats[col] = int(remediated)
             if s5_count > 0:
                 pct = s5_count / len(df)
@@ -259,8 +317,15 @@ def run_cleanup(config: Dict):
     # -----------------------------
     # Recompute expressions
     # -----------------------------
+    allow_unsafe_recompute = bool(config.get("allow_unsafe_recompute", False))
     for col, expr in recompute.items():
         try:
+            if not allow_unsafe_recompute and not is_safe_recompute_expression(expr, df.columns):
+                print(
+                    f"[WARN] recompute skipped for {col}: unsafe expression '{expr}'. "
+                    "Enable allow_unsafe_recompute to bypass."
+                )
+                continue
             df[col] = df.eval(expr, engine="python")
         except Exception as e:
             print(f"[WARN] recompute failed for {col}: {e}")
@@ -385,13 +450,10 @@ def run_cleanup(config: Dict):
     # --- Bifurcated export (Gold + S5 forensic buffer) ---
     currency_col_for_split = currency_columns[0] if currency_columns else None
     if currency_col_for_split and currency_col_for_split in df.columns:
-        mask_quarantine = (
-            (df[currency_col_for_split] == "S5_REVIEW_REQUIRED")
-            | (df[currency_col_for_split].isna())
-        )
+        mask_quarantine = df[currency_col_for_split].isna() | s5_any_mask
     else:
         print("[WARN] No currency column found for S5 quarantine split.")
-        mask_quarantine = pd.Series(False, index=df.index)
+        mask_quarantine = s5_any_mask.copy()
 
     df_gold = df[~mask_quarantine].copy()
     df_s5 = df[mask_quarantine].copy()

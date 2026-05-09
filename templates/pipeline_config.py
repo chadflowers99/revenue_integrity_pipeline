@@ -1,4 +1,4 @@
-# config_TEMPLATE.py
+# pipeline_config.py
 
 from pathlib import Path
 
@@ -55,10 +55,13 @@ config = {
     ],
 
     # Optional recompute expressions
+    # By default only basic arithmetic over known columns is allowed.
+    # Set allow_unsafe_recompute=True only in trusted environments.
     "recompute": {
         # Example:
         # "total_spent": "quantity * price_per_unit"
     },
+    "allow_unsafe_recompute": False,
 
     # Validation rules
     "validation_rules": [],
@@ -74,8 +77,6 @@ config = {
             "Accessory": "Accessories",
             "Accessories": "Accessories",
             "Electronics": "Electronics"
-            # Note: category backfill from item_name (e.g. Keyboard -> Accessories)
-            # is not supported by the engine config and must be handled post-run.
         },
         "payment_method": {
             "Card": "Card",
@@ -84,6 +85,21 @@ config = {
             "Mobile Pay": "Mobile"
         }
     },
+
+    # Conditional derivations from one column into another (e.g. backfill category)
+    "conditional_maps": [
+        {
+            "target_column": "category",
+            "source_column": "item_name",
+            "lookup": {
+                "Keyboard": "Accessories",
+                "Laptop Stand": "Accessories",
+                "Usb Cable": "Electronics",
+                "Wireless Mouse": "Electronics"
+            },
+            "only_if_target_missing": True
+        }
+    ],
 
     # ZIP code columns to validate (must be 5 digits, else replaced with 'Unknown')
     "zip_columns": [
@@ -97,6 +113,9 @@ config = {
 
     # S5 threshold: flag as CRITICAL if this fraction of rows can't be coerced
     "s5_threshold": 0.05,
+
+    # Row-level forensic status column for S5 routing.
+    "row_flag_column": "_row_flag",
 
     # Export filenames for bifurcated outputs
     "gold_output_filename": "client_sales_GOLD.csv",
