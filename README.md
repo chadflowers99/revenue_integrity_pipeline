@@ -1,5 +1,7 @@
 # Forensic Revenue Pipeline
 
+Modular, production-grade data pipeline with forensic fraud detection and revenue forecasting.
+
 This project is organized for reusable client onboarding.
 
 ## Architecture Diagram
