@@ -1,6 +1,6 @@
 # Forensic Revenue Pipeline
 
-Modular, production-grade data pipeline with forensic fraud detection and revenue forecasting.
+Modular, production-grade data pipeline with forensic data validation, S5 quarantine routing, and revenue-loss projection.
 
 This project is organized for reusable client onboarding.
 
