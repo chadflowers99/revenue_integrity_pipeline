@@ -30,12 +30,26 @@ flowchart TD
 1. Create a folder under `clients/` (example: `clients/acme_2026_05`).
 2. Copy `templates/pipeline_config.py` to `clients/acme_2026_05/client_config.py`.
 3. Put source data at `clients/acme_2026_05/raw_data.csv`.
-4. Update `run_pipeline.py` value of `CLIENT_NAME`.
-5. Run:
+4. Run with a specific client folder name (or omit to use the default pointer):
 
 ```powershell
-python .\run_pipeline.py
+python .\run_pipeline.py acme_2026_05
 ```
+
+## Projection Controls
+
+The projection engine now supports maturity controls to keep long-range projections financially plausible and operationally defensible.
+
+- `projection_mode`: `conservative`, `moderate`, or `aggressive`
+- `max_monthly_growth`: optional hard cap override for monthly growth
+- `monthly_growth_damping`: optional monthly damping factor
+- `min_confident_baseline_months`: minimum baseline months before confidence downgrade
+- `low_confidence_max_horizon_months`: automatic horizon clamp when baseline history is limited
+
+Default behavior:
+
+- If baseline history is thin (for example, fewer than 6 months), the engine downgrades mode, reduces growth assumptions, shortens horizon, and prints warnings.
+- If configured revenue column is missing, the engine derives revenue from `quantity * unit_price` when available.
 
 ## Notes
 
@@ -45,3 +59,7 @@ python .\run_pipeline.py
   - `projection_months`
   - `projection_revenue_col`
   - `projection_date_col`
+  - `projection_mode`
+  - `min_confident_baseline_months`
+  - `low_confidence_max_horizon_months`
+- Output files use safe-write behavior: if a target CSV is locked/open, the pipeline writes a timestamped fallback file instead of hard-failing.
