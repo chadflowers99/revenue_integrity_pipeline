@@ -7,6 +7,7 @@ Behavior is 100% driven by the job config.
 
 import os
 import re
+from datetime import datetime
 from typing import Dict
 import pandas as pd
 pd.set_option('display.max_columns', None)
@@ -113,6 +114,28 @@ def detect_encoding(path: str) -> str:
         except UnicodeDecodeError:
             continue
     return "utf-8"
+
+
+def safe_write_csv(df: pd.DataFrame, target_path: str, label: str):
+    """Writes CSV and falls back to a timestamped filename when the target is locked."""
+    target_dir = os.path.dirname(target_path)
+    if target_dir:
+        os.makedirs(target_dir, exist_ok=True)
+
+    try:
+        df.to_csv(target_path, index=False, encoding="utf-8")
+        print(f"{label} written to:", target_path)
+        return target_path
+    except PermissionError:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        root, ext = os.path.splitext(target_path)
+        fallback_path = f"{root}_{stamp}{ext or '.csv'}"
+        df.to_csv(fallback_path, index=False, encoding="utf-8")
+        print(
+            f"[WARN] {label} target is locked/open. Wrote fallback file to:",
+            fallback_path,
+        )
+        return fallback_path
 
 
 # -----------------------------
@@ -421,11 +444,7 @@ def run_cleanup(config: Dict):
     # -----------------------------
     if malformed_rows.shape[0] > 0:
         malformed_path = os.path.splitext(output_path)[0] + "_malformed_rows.csv"
-        malformed_dir = os.path.dirname(malformed_path)
-        if malformed_dir:
-            os.makedirs(malformed_dir, exist_ok=True)
-        malformed_rows.to_csv(malformed_path, index=False, encoding="utf-8")
-        print("Malformed rows written to:", malformed_path)
+        safe_write_csv(malformed_rows, malformed_path, "Malformed rows")
     else:
         print("No malformed rows detected.")
 
@@ -437,15 +456,7 @@ def run_cleanup(config: Dict):
 
     # --- Export cleaned file ---
     output_dir = os.path.dirname(output_path)
-    if output_dir:
-        os.makedirs(output_dir, exist_ok=True)
-    try:
-        df.to_csv(output_path, index=False, encoding="utf-8")
-        print("Cleaned file written to:", output_path)
-    except PermissionError:
-        fallback_path = os.path.splitext(output_path)[0] + "_latest.csv"
-        df.to_csv(fallback_path, index=False, encoding="utf-8")
-        print("[WARN] Primary output file is locked/open. Wrote fallback file to:", fallback_path)
+    safe_write_csv(df, output_path, "Cleaned file")
 
     # --- Bifurcated export (Gold + S5 forensic buffer) ---
     currency_col_for_split = currency_columns[0] if currency_columns else None
@@ -462,13 +473,13 @@ def run_cleanup(config: Dict):
     s5_filename = config.get("s5_output_filename", "S5_FORENSIC_BUFFER.csv")
 
     gold_path = os.path.join(output_dir, gold_filename)
-    df_gold.to_csv(gold_path, index=False, encoding="utf-8")
-    print(f"[EXPORT] Gold Layer written to: {gold_path} ({len(df_gold)} rows)")
+    written_gold = safe_write_csv(df_gold, gold_path, "[EXPORT] Gold Layer")
+    print(f"[EXPORT] Gold Layer rows: {len(df_gold)}")
 
     if not df_s5.empty:
         s5_path = os.path.join(output_dir, s5_filename)
-        df_s5.to_csv(s5_path, index=False, encoding="utf-8")
-        print(f"[EXPORT] S5 Forensic Buffer written to: {s5_path} ({len(df_s5)} rows)")
+        safe_write_csv(df_s5, s5_path, "[EXPORT] S5 Forensic Buffer")
+        print(f"[EXPORT] S5 Forensic Buffer rows: {len(df_s5)}")
         print("         Action required: Client review needed for missing revenue signals.")
 
     

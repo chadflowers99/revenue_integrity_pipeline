@@ -123,10 +123,16 @@ config = {
     "projection_output_filename": "loss_projection_report.csv",
 
     # Projection settings
-    "review_date": "2026-01-15",
+    "review_date": "2026-03-01",
     "projection_months": 60,
     "projection_revenue_col": "total_sale",
     "projection_date_col": "sale_date",
+    "projection_mode": "moderate",
+    "min_confident_baseline_months": 6,
+    "low_confidence_max_horizon_months": 24,
+    # Optional overrides (uncomment to force custom behavior):
+    # "max_monthly_growth": 0.10,
+    # "monthly_growth_damping": 0.98,
 
     # Columns to include in the data quality report (null counts per column)
     "quality_columns": [

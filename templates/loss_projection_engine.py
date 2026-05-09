@@ -13,6 +13,141 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+
+MODE_ORDER = ["conservative", "moderate", "aggressive"]
+MODE_SETTINGS = {
+    "conservative": {
+        "max_monthly_growth": 0.03,
+        "monthly_growth_damping": 0.96,
+    },
+    "moderate": {
+        "max_monthly_growth": 0.08,
+        "monthly_growth_damping": 0.98,
+    },
+    "aggressive": {
+        "max_monthly_growth": 0.15,
+        "monthly_growth_damping": 0.99,
+    },
+}
+
+
+def _sanitize_mode(mode):
+    mode_normalized = str(mode or "moderate").strip().lower()
+    if mode_normalized not in MODE_SETTINGS:
+        print(f"[WARN] Unknown projection_mode '{mode}'. Falling back to 'moderate'.")
+        return "moderate"
+    return mode_normalized
+
+
+def _downgrade_mode(mode):
+    idx = MODE_ORDER.index(mode)
+    return MODE_ORDER[max(0, idx - 1)]
+
+
+def resolve_projection_controls(config, baseline_months):
+    """Resolves capped-growth controls with baseline-confidence safeguards."""
+    selected_mode = _sanitize_mode(config.get("projection_mode", "moderate"))
+    base_controls = MODE_SETTINGS[selected_mode].copy()
+
+    min_confident_months = int(config.get("min_confident_baseline_months", 6))
+    low_confidence_horizon = int(config.get("low_confidence_max_horizon_months", 24))
+
+    requested_horizon = int(config.get("projection_months", 60))
+    max_horizon = requested_horizon
+    applied_mode = selected_mode
+
+    if baseline_months < min_confident_months:
+        downgraded_mode = _downgrade_mode(selected_mode)
+        if downgraded_mode != selected_mode:
+            print(
+                f"[WARN] Baseline months ({baseline_months}) < {min_confident_months}. "
+                f"Downgrading projection mode from '{selected_mode}' to '{downgraded_mode}'."
+            )
+            applied_mode = downgraded_mode
+            base_controls = MODE_SETTINGS[applied_mode].copy()
+
+        if requested_horizon > low_confidence_horizon:
+            max_horizon = low_confidence_horizon
+            print(
+                f"[WARN] Baseline months ({baseline_months}) are limited. "
+                f"Shortening projection horizon from {requested_horizon} to {max_horizon} months."
+            )
+
+        # Apply extra caution under low confidence.
+        base_controls["max_monthly_growth"] *= 0.75
+
+    # Explicit config overrides take precedence over mode defaults.
+    max_monthly_growth = float(
+        config.get("max_monthly_growth", base_controls["max_monthly_growth"])
+    )
+    monthly_growth_damping = float(
+        config.get("monthly_growth_damping", base_controls["monthly_growth_damping"])
+    )
+
+    print("\n=== PROJECTION CONTROLS ===")
+    print(f"  Requested mode      : {selected_mode}")
+    print(f"  Applied mode        : {applied_mode}")
+    print(f"  Baseline months     : {baseline_months}")
+    print(f"  Horizon (months)    : {max_horizon}")
+    print(f"  Max monthly growth  : {max_monthly_growth:.2%}")
+    print(f"  Growth damping/mo   : {monthly_growth_damping:.4f}")
+
+    return {
+        "projection_months": max_horizon,
+        "max_monthly_growth": max_monthly_growth,
+        "monthly_growth_damping": monthly_growth_damping,
+    }
+
+
+def safe_write_projection(df, projection_output):
+    """Writes projection CSV and falls back to a timestamped filename if target is locked."""
+    try:
+        df.to_csv(projection_output, index=False)
+        print(f"\nProjection report written to: {projection_output}")
+        return projection_output
+    except PermissionError:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        fallback_output = projection_output.with_name(
+            f"{projection_output.stem}_{stamp}{projection_output.suffix or '.csv'}"
+        )
+        df.to_csv(fallback_output, index=False)
+        print(
+            f"\n[WARN] Projection output is locked/open. "
+            f"Report written to fallback: {fallback_output}"
+        )
+        return fallback_output
+
+
+def resolve_revenue_column(df, configured_revenue_col):
+    """Resolves an existing revenue column or derives one from quantity * unit_price."""
+    if configured_revenue_col in df.columns:
+        return configured_revenue_col
+
+    if {"quantity", "unit_price"}.issubset(df.columns):
+        # Best-effort derive line-level revenue when canonical total_sale is absent.
+        qty = pd.to_numeric(df["quantity"], errors="coerce")
+        price = pd.to_numeric(df["unit_price"], errors="coerce")
+        df["_derived_total_sale"] = qty * price
+        print(
+            f"[WARN] Revenue column '{configured_revenue_col}' not found. "
+            "Using derived revenue from quantity * unit_price."
+        )
+        return "_derived_total_sale"
+
+    fallback_candidates = ["total_sale", "total_revenue", "revenue", "amount", "unit_price"]
+    for candidate in fallback_candidates:
+        if candidate in df.columns:
+            print(
+                f"[WARN] Revenue column '{configured_revenue_col}' not found. "
+                f"Falling back to '{candidate}'."
+            )
+            return candidate
+
+    raise KeyError(
+        f"Revenue column '{configured_revenue_col}' not found and no fallback is available. "
+        f"Available columns: {list(df.columns)}"
+    )
+
 # -----------------------------------------------
 # Date Validation
 # -----------------------------------------------
@@ -33,6 +168,7 @@ def validate_review_date(review_date_str):
 
 def load_gold(path, review_date_str, date_col, revenue_col):
     df = pd.read_csv(path, parse_dates=[date_col])
+    revenue_col = resolve_revenue_column(df, revenue_col)
     df = df[df[revenue_col].notna()]
     df = df[df[date_col].notna()]
     df = df.sort_values(date_col)
@@ -56,7 +192,7 @@ def load_gold(path, review_date_str, date_col, revenue_col):
             f"({data_max.date()}). Post-review actuals will all be N/A."
         )
 
-    return df
+    return df, revenue_col
 
 # -----------------------------------------------
 # Monthly Aggregation
@@ -130,7 +266,17 @@ def actual_post_review(monthly_df, review_date, revenue_col):
 # Loss Projection
 # -----------------------------------------------
 
-def project_loss(slope, intercept, pre_length, post_df, projection_months, review_date, revenue_col):
+def project_loss(
+    slope,
+    intercept,
+    pre_length,
+    post_df,
+    projection_months,
+    review_date,
+    revenue_col,
+    max_monthly_growth,
+    monthly_growth_damping,
+):
     rows = []
     total_projected = 0.0
     total_actual = 0.0
@@ -143,11 +289,21 @@ def project_loss(slope, intercept, pre_length, post_df, projection_months, revie
     print(f"  {'-'*12} {'-'*12} {'-'*12} {'-'*12}")
 
     review_period = pd.Period(review_date, freq="M")
+    baseline_anchor = max(0.0, slope * max(pre_length - 1, 0) + intercept)
+    if baseline_anchor <= 0:
+        raw_growth_rate = 0.0
+    else:
+        raw_growth_rate = slope / baseline_anchor
+
+    projected_prev = baseline_anchor
 
     for i in range(projection_months):
         month = review_period + i
-        x_val = pre_length + i
-        projected = max(0.0, slope * x_val + intercept)
+        damped_growth = raw_growth_rate * (monthly_growth_damping ** i)
+        if damped_growth > 0:
+            damped_growth = min(damped_growth, max_monthly_growth)
+        projected = max(0.0, projected_prev * (1 + damped_growth))
+        projected_prev = projected
         actual = post_revenue.get(month, None)
 
         if actual is not None:
@@ -209,11 +365,13 @@ def run_projection(config_path):
 
     validate_review_date(review_date)
     print(f"Loading Gold Layer: {gold_file}")
-    df = load_gold(gold_file, review_date, date_col, revenue_col)
+    df, revenue_col = load_gold(gold_file, review_date, date_col, revenue_col)
     print(f"Loaded {len(df)} clean rows.")
 
     monthly = monthly_revenue(df, date_col, revenue_col)
     _, slope, intercept, pre_length = fit_baseline(monthly, review_date, revenue_col)
+    controls = resolve_projection_controls(config, pre_length)
+    projection_months = controls["projection_months"]
     post = actual_post_review(monthly, review_date, revenue_col)
     projection_df, total_loss = project_loss(
         slope,
@@ -223,10 +381,11 @@ def run_projection(config_path):
         projection_months,
         review_date,
         revenue_col,
+        controls["max_monthly_growth"],
+        controls["monthly_growth_damping"],
     )
 
-    projection_df.to_csv(projection_output, index=False)
-    print(f"\nProjection report written to: {projection_output}")
+    written_projection_path = safe_write_projection(projection_df, projection_output)
     print(f"Review date used            : {review_date}")
     print(
         f"Projection window           : {projection_months} months "
