@@ -1,0 +1,87 @@
+=== RAW PREVIEW ===
+Order ID Sale Date Item Name    Category Quantity Unit Price Payment Method Customer Zip
+ORD-1000       NaN USB Cable         NaN      NaN      99.99           Card          NaN
+ORD-1001       NaN     Mouse electronics      two      19.99           Cash        90210
+ORD-1002  1/4/2026   Monitor         NaN        2      99.99           Cash          NaN
+
+
+=== DATA QUALITY REPORT ===
+Total rows: 200
+Rows with missing sale_date: 65
+Rows with missing quantity: 91
+Rows with missing unit_price: 45
+Rows with missing category: 32
+Rows with missing payment_method: 48
+Rows with missing customer_zip: 0
+Rows remediated in unit_price: 35
+Rows needing review (any quality column null): 168
+
+
+=== REQUIRED COLUMN NULL COUNTS ===
+order_id 24 nulls
+sale_date 65 nulls
+quantity 91 nulls
+unit_price 45 nulls
+category 32 nulls
+payment_method 48 nulls
+
+
+=== MALFORMED ROW DIAGNOSTICS ===
+Missing required: 172
+Validation failures: 0
+Corrupted rows: 0
+TOTAL malformed rows: 172
+
+
+=== BASELINE TREND (pre 2026-03-01) ===
+Months of data : 2
+Avg monthly rev: $2,504.48
+Monthly growth : $+1,189.86/month
+
+
+=== PROJECTION CONTROLS ===
+Requested mode      : moderate
+Applied mode        : conservative
+Baseline months     : 2
+Horizon (months)    : 24
+Max monthly growth  : 2.25%
+Growth damping/mo   : 0.9600
+
+
+=== ACTUAL POST-REVIEW ===
+Months of data : 1
+Avg monthly rev: $199.93
+Total revenue  : $199.93
+
+
+=== LOSS PROJECTION (24 months) ===
+Month           Projected       Actual         Loss
+------------ ------------ ------------ ------------
+2026-03      $   3,169.15      $199.93 $   2,969.22
+2026-04      $   3,240.45          N/A $   3,240.45
+2026-05      $   3,313.36          N/A $   3,313.36
+2026-06      $   3,387.91          N/A $   3,387.91
+2026-07      $   3,464.14          N/A $   3,464.14
+2026-08      $   3,542.08          N/A $   3,542.08
+2026-09      $   3,621.78          N/A $   3,621.78
+2026-10      $   3,703.27          N/A $   3,703.27
+2026-11      $   3,786.60          N/A $   3,786.60
+2026-12      $   3,871.79          N/A $   3,871.79
+2027-01      $   3,958.91          N/A $   3,958.91
+2027-02      $   4,047.98          N/A $   4,047.98
+2027-03      $   4,139.06          N/A $   4,139.06
+2027-04      $   4,232.19          N/A $   4,232.19
+2027-05      $   4,327.42          N/A $   4,327.42
+2027-06      $   4,424.78          N/A $   4,424.78
+2027-07      $   4,524.34          N/A $   4,524.34
+2027-08      $   4,626.14          N/A $   4,626.14
+2027-09      $   4,730.23          N/A $   4,730.23
+2027-10      $   4,836.66          N/A $   4,836.66
+2027-11      $   4,945.48          N/A $   4,945.48
+2027-12      $   5,056.76          N/A $   5,056.76
+2028-01      $   5,170.53          N/A $   5,170.53
+2028-02      $   5,286.87          N/A $   5,286.87
+
+TOTAL        $  99,407.90 $     199.93 $  99,207.97
+
+Estimated total loss over 24 months: $99,207.97
