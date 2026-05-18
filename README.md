@@ -1,8 +1,12 @@
-# Forensic Revenue Pipeline
+# Revenue Integrity Pipeline
 
-Modular, production-grade data pipeline with forensic data validation, S5 quarantine routing, and revenue-loss projection.
+Multi-tenant medallion ETL architecture with Silver-layer defensive normalization, S5 forensic quarantine routing, and revenue projection modeling. Engineered for multi-client onboarding with config-driven schema handling, audit-safe orchestration, and zero-loss row integrity guarantees.
 
-This project is organized for reusable client onboarding.
+## Core Design Principle
+
+**Invariant: Input Rows = Gold Rows + S5 Rows**
+
+This pipeline guarantees complete data lineage and row-level observability through explicit data integrity checks, defensive parsing with remediation tracking, and configurable validation rules.
 
 ## Architecture Diagram
 
@@ -14,6 +18,13 @@ flowchart TD
   D --> E[Gold Layer]
   E --> F[Projection Engine]
 ```
+
+## Key Features
+
+- **Defensive Parsing**: All data transformations return metadata flags (value, s5_flag, remediated) for complete auditability
+- **Multi-Tenant Isolation**: Client-scoped configs isolate blast radius—schema drift in one client doesn't impact others
+- **S5 Exception Routing**: Malformed or high-risk rows are bifurcated into forensic buffer, preserving Gold-layer analytical integrity
+- **Audit-Safe Orchestration**: Timestamped logs and client-scoped output directories enable end-to-end traceability
 
 ## Structure
 
