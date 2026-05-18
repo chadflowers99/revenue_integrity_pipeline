@@ -3,5 +3,8 @@ __pycache__/
 **/__pycache__/
 *.pyc
 
+# Client source data (never commit raw client data)
+clients/**/raw_data.csv
+
 # Generated demo artifacts
 clients/demo_retail_case/output/
