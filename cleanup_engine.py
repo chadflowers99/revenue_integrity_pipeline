@@ -42,6 +42,13 @@ def clean_text(text):
     return patch_corrupted_chars(normalize_encoding(text))
 
 
+def safe_clean_strip(value):
+    """Normalize text and trim whitespace without relying on pandas .str accessors."""
+    if pd.isna(value):
+        return ""
+    return str(clean_text(str(value))).strip()
+
+
 def diagnostic_currency_handler(value):
     """
     Silver-Layer currency parsing with explicit S5 flag routing.
@@ -214,7 +221,7 @@ def run_cleanup(config: Dict):
     # -----------------------------
     for col in text_columns:
         if col in df.columns:
-            df[col] = df[col].astype(str).apply(clean_text).str.strip()
+            df[col] = df[col].apply(safe_clean_strip)
 
     # -----------------------------
     # Title-case normalization

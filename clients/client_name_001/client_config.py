@@ -94,10 +94,11 @@ config = {
             "lookup": {
                 "Keyboard": "Accessories",
                 "Laptop Stand": "Accessories",
+                "Monitor": "Electronics",
                 "Usb Cable": "Electronics",
                 "Wireless Mouse": "Electronics"
             },
-            "only_if_target_missing": True
+            "only_if_target_missing": False
         }
     ],
 

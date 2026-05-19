@@ -169,9 +169,21 @@ def validate_review_date(review_date_str):
 def load_gold(path, review_date_str, date_col, revenue_col):
     df = pd.read_csv(path, parse_dates=[date_col])
     revenue_col = resolve_revenue_column(df, revenue_col)
+
+    # Ensure revenue is numeric so monthly aggregation and baseline fitting remain stable.
+    before_rows = len(df)
+    df[revenue_col] = pd.to_numeric(df[revenue_col], errors="coerce")
+
     df = df[df[revenue_col].notna()]
     df = df[df[date_col].notna()]
     df = df.sort_values(date_col)
+
+    dropped_rows = before_rows - len(df)
+    if dropped_rows > 0:
+        print(
+            f"[WARN] Dropped {dropped_rows} rows with non-numeric revenue or invalid dates "
+            f"before projection fit."
+        )
 
     # Check REVIEW_DATE falls within the data range
     data_min = df[date_col].min()
