@@ -10,10 +10,6 @@ import re
 from datetime import datetime
 from typing import Dict
 import pandas as pd
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 2000)
-pd.set_option('display.max_colwidth', None)
-pd.set_option('display.expand_frame_repr', False)
 
 
 # -----------------------------
