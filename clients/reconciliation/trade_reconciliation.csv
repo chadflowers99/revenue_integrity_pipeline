@@ -1,0 +1,10 @@
+trade_date,symbol,action,market_holdings_rows,robinhood_rows,market_holdings_quantity,robinhood_quantity,quantity_difference,market_holdings_notional,robinhood_notional,notional_difference,market_holdings_expected_amount,robinhood_amount,amount_difference,possible_duplicate,possible_duplicate_sources,status
+2026-06-11,SVIX,SELL,2,2,3,3,0,61.65,61.65,0,61.65,61.65,0,false,,matched
+2026-06-15,UVXY,BUY,1,1,1,1,0,26.11,26.11,0,-26.11,-26.11,0,false,,matched
+2026-06-16,SVIX,BUY,1,1,1,1,0,23.46,23.46,0,-23.46,-23.46,0,false,,matched
+2026-06-16,SVIX,SELL,1,1,3,3,0,70.65,70.65,0,70.65,70.65,0,false,,matched
+2026-06-16,UVXY,SELL,1,1,1,1,0,25.9,25.9,0,25.9,25.9,0,false,,matched
+2026-06-17,SVIX,BUY,3,3,3,3,0,69.46,69.46,0,-69.46,-69.46,0,false,,matched
+2026-06-17,SVIX,SELL,2,2,2,2,0,46.45,46.45,0,46.45,46.45,0,false,,matched
+2026-06-17,UVXY,BUY,3,3,3,3,0,77.59,77.59,0,-77.59,-77.59,0,false,,matched
+2026-06-17,UVXY,SELL,3,3,3,3,0,79.39,79.39,0,79.39,79.39,0,false,,matched

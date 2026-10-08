@@ -1,76 +1,38 @@
 # Revenue Integrity Pipeline
 
-Multi-tenant medallion ETL architecture with Silver-layer defensive normalization, S5 forensic quarantine routing, and revenue projection modeling. Engineered for multi-client onboarding with config-driven schema handling, audit-safe orchestration, and zero-loss row integrity guarantees.
+This repository currently provides a local trade reconciliation utility for comparing a Market Holdings trade-history export with a Robinhood activity export.
 
-## Core Design Principle
+## Reconcile Trade Exports
 
-**Invariant: Input Rows = Gold Rows + S5 Rows**
-
-This pipeline guarantees complete data lineage and row-level observability through explicit data integrity checks, defensive parsing with remediation tracking, and configurable validation rules.
-
-## Architecture Diagram
-
-```mermaid
-flowchart TD
-  A[RAW CSV] --> B[Bronze]
-  B --> C[Silver Normalization]
-  C --> D[Validation and S5 Split]
-  D --> E[Gold Layer]
-  E --> F[Projection Engine]
-```
-
-## Key Features
-
-- **Defensive Parsing**: All data transformations return metadata flags (value, s5_flag, remediated) for complete auditability
-- **Multi-Tenant Isolation**: Client-scoped configs isolate blast radius—schema drift in one client doesn't impact others
-- **S5 Exception Routing**: Malformed or high-risk rows are bifurcated into forensic buffer, preserving Gold-layer analytical integrity
-- **Audit-Safe Orchestration**: Timestamped logs and client-scoped output directories enable end-to-end traceability
-
-## Structure
-
-- `templates/pipeline_config.py`: Copy and customize for each client.
-- `templates/loss_projection_engine.py`: Shared projection script driven by client config.
-- `clients/client_name_001/raw_data.csv`: Client source data.
-- `clients/client_name_001/client_config.py`: Client-specific schema and projection settings.
-- `clients/client_name_001/output/`: Logs and generated outputs.
-- `cleanup_engine.py`: Core cleanup engine.
-- `run_pipeline.py`: Orchestrates cleanup + projection for one client.
-
-## New Client Setup
-
-1. Create a folder under `clients/` (example: `clients/acme_2026_05`).
-2. Copy `templates/pipeline_config.py` to `clients/acme_2026_05/client_config.py`.
-3. Put source data at `clients/acme_2026_05/raw_data.csv`.
-4. Run with a specific client folder name (or omit to use the default pointer):
+From the repository root, run:
 
 ```powershell
-python .\run_pipeline.py acme_2026_05
+python .\reconcile_trades.py
 ```
 
-## Projection Controls
+By default, the command reads `clients/trade_history.csv` and `clients/june.csv`. To compare different files, pass `--market-holdings-csv` and `--robinhood-csv`. Use `--output-dir` to select another report folder.
 
-The projection engine now supports maturity controls to keep long-range projections financially plausible and operationally defensible.
+The input files need these columns:
 
-- `projection_mode`: `conservative`, `moderate`, or `aggressive`
-- `max_monthly_growth`: optional hard cap override for monthly growth
-- `monthly_growth_damping`: optional monthly damping factor
-- `min_confident_baseline_months`: minimum baseline months before confidence downgrade
-- `low_confidence_max_horizon_months`: automatic horizon clamp when baseline history is limited
+- Market Holdings: `TRADE DATE`, `ACTION`, `SYMBOL`, `QTY` (or `QUANTITY`), `PRICE`
+- Robinhood: `Activity Date`, `Instrument`, `Trans Code`, `Quantity`, `Price`, `Amount`
 
-Default behavior:
+The reconciler normalizes the trade fields and groups records by trade date, symbol, and buy/sell action, allowing multiple broker fills to match one Market Holdings trade. It compares grouped quantities and expected signed cash flow against Robinhood's `Amount`. Non-trade Robinhood activity and invalid rows are written to separate reports. Exact repeated rows are marked as possible duplicates; they are not automatically removed.
 
-- If baseline history is thin (for example, fewer than 6 months), the engine downgrades mode, reduces growth assumptions, shortens horizon, and prints warnings.
-- If configured revenue column is missing, the engine derives revenue from `quantity * unit_price` when available.
+Reports are written to `clients/reconciliation/` by default:
 
-## Notes
+- `trade_reconciliation.csv`: one row per date/symbol/action group and its match status
+- `invalid_rows.csv`: rows that could not be normalized for comparison
+- `excluded_activity.csv`: non-trade Robinhood activity
+- `reconciliation_summary.json`: counts by source and match status
 
-- `run_pipeline.py` writes a timestamped log to the selected client output folder.
-- Projection uses settings from `client_config.py`:
-  - `review_date`
-  - `projection_months`
-  - `projection_revenue_col`
-  - `projection_date_col`
-  - `projection_mode`
-  - `min_confident_baseline_months`
-  - `low_confidence_max_horizon_months`
-- Output files use safe-write behavior: if a target CSV is locked/open, the pipeline writes a timestamped fallback file instead of hard-failing.
+Matching is group-level, so distinct orders for the same symbol, date, and side may be combined. Fees and settlement cash are not separately reconciled.
+
+Run the tests with:
+
+```powershell
+python -m unittest discover -s .\tests -v
+```
+
+Each run overwrites the reports in `clients/reconciliation/` and leaves the input CSVs unchanged.
+

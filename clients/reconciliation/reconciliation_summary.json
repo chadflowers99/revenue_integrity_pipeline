@@ -1,0 +1,17 @@
+{
+  "market_holdings": {
+    "trade_rows": 17,
+    "invalid_rows": 2,
+    "excluded_activity_rows": 0
+  },
+  "robinhood": {
+    "trade_rows": 17,
+    "invalid_rows": 0,
+    "excluded_activity_rows": 4
+  },
+  "comparison_groups": 9,
+  "status_counts": {
+    "matched": 9
+  },
+  "possible_duplicate_groups": 0
+}
