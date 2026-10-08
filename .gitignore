@@ -3,8 +3,5 @@ __pycache__/
 **/__pycache__/
 *.pyc
 
-# Client source data (never commit raw client data)
-clients/**/raw_data.csv
-
 # Reconciliation input and report CSVs under clients/ are intentionally tracked.
 
